@@ -111,3 +111,4 @@ with Flow(
 ) as flow:
     df = fetch_data_from_yahoo()
     train_model(df)
+flow.register(project_name="test")
