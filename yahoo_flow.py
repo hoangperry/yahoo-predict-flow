@@ -101,7 +101,7 @@ def train_model(input_df):
 
 
 with Flow(
-        "the_first_revenue_prediction",
+        "yahoo_predict",
         result=LocalResult(),
         storage=GitHub(
             repo="https://github.com/hoangperry/yahoo-predict-flow",
