@@ -104,7 +104,7 @@ with Flow(
         "yahoo_predict",
         result=LocalResult(),
         storage=GitHub(
-            repo="https://github.com/hoangperry/yahoo-predict-flow",
+            repo="hoangperry/yahoo-predict-flow",
             path="yahoo_flow.py",
         ),
         run_config=UniversalRun(labels=["hoangai"]),
