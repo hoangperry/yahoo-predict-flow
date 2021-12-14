@@ -46,7 +46,7 @@ def fetch_data_from_yahoo():
     data_yahoo = None
     get_col = 'Close'
     yf.pdr_override()
-    past_14_days = datetime.now() - timedelta(days=14)
+    past_14_days = datetime.now() - timedelta(days=7)
 
     for index_ticker, ticker in enumerate(ticker_dict):
         ticker_data = pdr.get_data_yahoo(ticker, period="max", interval = "5m", start=past_14_days.strftime('%Y-%m-%d'))
