@@ -3,7 +3,6 @@ import yfinance as yf
 from pandas_datareader import data as pdr
 from datetime import datetime, timedelta
 
-import os
 import torch
 import random
 import numpy as np
@@ -13,11 +12,9 @@ from ez4cast.model.tempflow.tempflow_estimator import TempFlowEstimator
 from gluonts.dataset.multivariate_grouper import ListDataset, MultivariateGrouper
 
 import prefect
-from prefect import task, Flow
-from prefect.run_configs import LocalRun, UniversalRun
+from prefect.run_configs import UniversalRun
 from prefect.engine.results import LocalResult
 
-import sqlalchemy
 from prefect import task, Flow
 from prefect.storage import GitHub
 
@@ -26,6 +23,7 @@ np.random.seed(42)
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 torch.backends.cudnn.deterministic = True
+logger = prefect.context.get("logger")
 
 
 @task
@@ -60,7 +58,6 @@ def fetch_data_from_yahoo():
 
     data_yahoo.drop(data_yahoo.tail(1).index,inplace=True)
     data_yahoo.index = data_yahoo.index.tz_localize(None)
-    data_yahoo.index[0]
     data_yahoo = data_yahoo[:-1]
     return data_yahoo
 
