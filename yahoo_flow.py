@@ -1,3 +1,4 @@
+import pymongo
 import yfinance as yf
 
 from pandas_datareader import data as pdr
@@ -24,24 +25,24 @@ torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 torch.backends.cudnn.deterministic = True
 logger = prefect.context.get("logger")
+ticker_dict = {
+    'AAPL': 'Apple',
+    'MSFT': 'Microsoft',
+    'GOOG': 'Google',
+    'AMZN': 'Amazon',
+    'FB': 'Facebook',
+    'NVDA': 'Nvidia',
+    'INTC': 'Intel',
+    'BABA': 'Alibaba',
+    'TSLA': 'Tesla',
+    '^GSPC': 'S&P_500',
+    '^IXIC': 'Nasdaq',
+    '^DJI': 'Dow_Jones',
+}
 
 
 @task
 def fetch_data_from_yahoo():
-    ticker_dict = {
-        'AAPL': 'Apple',
-        'MSFT': 'Microsoft',
-        'GOOG': 'Google',
-        'AMZN': 'Amazon',
-        'FB': 'Facebook',
-        'NVDA': 'Nvidia',
-        'INTC': 'Intel',
-        'BABA': 'Alibaba',
-        'TSLA': 'Tesla',
-        '^GSPC': 'S&P_500',
-        '^IXIC': 'Nasdaq',
-        '^DJI': 'Dow_Jones',
-    }
 
     data_yahoo = None
     get_col = 'Close'
@@ -59,6 +60,7 @@ def fetch_data_from_yahoo():
     data_yahoo.drop(data_yahoo.tail(1).index,inplace=True)
     data_yahoo.index = data_yahoo.index.tz_localize(None)
     data_yahoo = data_yahoo[:-1]
+    logger.info('Fetched data from yahoo')
     return data_yahoo
 
 
@@ -100,6 +102,17 @@ def train_model(input_df):
     return list_output
 
 
+def push_data_to_db(ai_result):
+    mongo_client = pymongo.MongoClient("mongodb://14.241.231.87:27017/")
+    my_db = mongo_client['flowdb']
+    my_collection = my_db['flowdb']
+    new_doc = dict()
+    for idx, i in enumerate(ticker_dict):
+        new_doc[ticker_dict[i]] = ai_result[idx]
+    response = my_collection.insert_one(new_doc)
+    logger.info(response)
+
+
 with Flow(
         "yahoo_predict",
         result=LocalResult(),
@@ -110,5 +123,7 @@ with Flow(
         run_config=UniversalRun(labels=["hoangai"]),
 ) as flow:
     df = fetch_data_from_yahoo()
-    train_model(df)
+    result = train_model(df)
+    push_data_to_db(result)
+
 flow.register(project_name="test")
