@@ -105,9 +105,9 @@ with Flow(
         result=LocalResult(),
         storage=GitHub(
             repo="https://github.com/hoangperry/yahoo-predict-flow",
-            path="duy-flow.py",
+            path="yahoo_flow.py",
         ),
-        run_config=UniversalRun(labels=["mail.kernel.vn"]),
+        run_config=UniversalRun(labels=["hoangai"]),
 ) as flow:
     df = fetch_data_from_yahoo()
     train_model(df)
