@@ -99,18 +99,16 @@ def train_model(input_df):
             np.mean(i[0])
         )
     logger.info(f"Predict value: {list_output}")
-    try:
-        mongo_client = pymongo.MongoClient("mongodb://14.241.231.87:27017/")
-        my_db = mongo_client['flowdb']
-        my_collection = my_db['flowdb']
-        new_doc = dict()
-        for idx, i in enumerate(ticker_dict):
-            new_doc[ticker_dict[i]] = list_output[idx]
-        response = my_collection.insert_one(new_doc)
-        logger.info(response)
-        mongo_client.close()
-    except:
-        pass
+
+    mongo_client = pymongo.MongoClient("mongodb://14.241.231.87:27017/")
+    my_db = mongo_client['flowdb']
+    my_collection = my_db['flowdb']
+    new_doc = dict()
+    for idx, i in enumerate(ticker_dict):
+        new_doc[ticker_dict[i]] = list_output[idx]
+    response = my_collection.insert_one(new_doc)
+    logger.info(response)
+    mongo_client.close()
 
 
 with Flow(
