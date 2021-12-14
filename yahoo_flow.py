@@ -104,11 +104,10 @@ with Flow(
         "the_first_revenue_prediction",
         result=LocalResult(),
         storage=GitHub(
-            repo="hoangperry/prefect-github-storage-test",
+            repo="https://github.com/hoangperry/yahoo-predict-flow",
             path="duy-flow.py",
         ),
         run_config=UniversalRun(labels=["mail.kernel.vn"]),
-    ) as flow:
+) as flow:
     df = fetch_data_from_yahoo()
     train_model(df)
-
