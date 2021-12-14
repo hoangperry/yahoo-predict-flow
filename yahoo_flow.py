@@ -96,7 +96,7 @@ def train_model(input_df):
     output = list(ptd.predictor.predict(dataset_train_by_c, 1000))[0].samples
     for i in output.T:
         list_output.append(
-            np.mean(i[0])
+            float(np.mean(i[0]))
         )
     logger.info(f"Predict value: {list_output}")
 
