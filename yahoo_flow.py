@@ -124,6 +124,5 @@ with Flow(
 ) as flow:
     df = fetch_data_from_yahoo()
     result = train_model(df)
-    push_data_to_db(result)
 
 flow.register(project_name="test")
